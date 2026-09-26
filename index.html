@@ -1,4 +1,4 @@
-<!doctype html><html lang='ko'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1,viewport-fit=cover'><meta name='theme-color' content='#101116'><title>타로 리딩 퀴즈 v4.6</title><style>
+<!doctype html><html lang='ko'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1,viewport-fit=cover'><meta name='theme-color' content='#101116'><title>타로 리딩 퀴즈 v4.7</title><style>
 *{box-sizing:border-box} :root{--bg:#101116;--card:#1a1c24;--line:#343743;--txt:#f7f4ed;--muted:#a8abb5;--gold:#e7c675;--ok:#a9e6b1;--bad:#ffaaa5}
 body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif;-webkit-tap-highlight-color:transparent}
 .app{max-width:560px;margin:auto;padding:env(safe-area-inset-top) 12px calc(24px + env(safe-area-inset-bottom))}
@@ -37,7 +37,32 @@ header{position:sticky;top:0;background:#101116ed;backdrop-filter:blur(12px);z-i
 @keyframes sparkle{0%{opacity:0;transform:translate(-50%,-50%) scale(.4) rotate(0)}35%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1.7) rotate(20deg)}}
 .box.correctfx{animation:correctPop .65s ease}
 .sparklefx{position:fixed;left:50%;top:42%;z-index:30;pointer-events:none;font-size:44px;animation:sparkle .7s ease forwards}
-</style></head><body><div class="app"><header><div class="top"><div class="title">🃏 타로 리딩 퀴즈 <span style="font-size:12px;color:#888">v4.6</span></div><div class="score" id="score"></div></div><div class="filters" id="filters"></div></header>
+
+/* v4.7: two-card comparisons use more of the mobile width */
+.visuals.two{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+  width:100%;
+  max-width:560px;
+  margin:10px auto 14px;
+  align-items:start;
+}
+.visuals.two .vcard{
+  width:100%!important;
+  max-width:none!important;
+}
+.visuals.two .vcard img{
+  width:100%!important;
+  height:auto!important;
+  max-height:none!important;
+  object-fit:contain;
+}
+@media(max-width:600px){
+  .visuals.two{gap:10px;}
+  .visuals.two .vcard{font-size:14px;}
+}
+</style></head><body><div class="app"><header><div class="top"><div class="title">🃏 타로 리딩 퀴즈 <span style="font-size:12px;color:#888">v4.7</span></div><div class="score" id="score"></div></div><div class="filters" id="filters"></div></header>
 <div class="box"><div class="small" style="margin:0 0 3px;text-align:left">학습 모드</div><div class="modes" id="modes"></div></div>
 <div class="box" id="quizbox"><div class="qhead" id="qhead"></div><div class="subq" id="subq"></div><div class="cardlabel" id="cardlabel" style="display:none"></div><div class="pic" id="pic"><img id="img"><div id="imgfail" class="imgfail">이미지를 불러오지 못했습니다.<br>인터넷 연결 후 다시 시도해 주세요.</div></div><div class="visuals" id="visuals" style="display:none"></div><div class="choices" id="choices"></div>
 <div class="feedback" id="feedback"><div id="result" class="result"></div><div id="cardname" class="cardname"></div><div id="explain" class="explain"></div><div id="hook" class="hook"></div><div id="detail" class="detail"></div><button id="next" class="next">다음 문제 →</button></div></div>
@@ -78,7 +103,7 @@ function showPic(c){hideVisuals();document.getElementById("pic").style.display="
 function setOptions(opts,correct){let box=document.getElementById("choices");box.innerHTML="";shuffle(opts).forEach((o,i)=>{let b=document.createElement("button");b.className="choice";b.dataset.value=o;b.innerHTML=`<b>${i+1}.</b> ${o}`;b.onclick=()=>answer(b,o);box.appendChild(b)});current.correct=correct}
 function cardObj(k){return cards.find(c=>c.ko===k)}
 function showVisuals(items,five=false,court=false){
- let v=document.getElementById("visuals");v.innerHTML="";v.style.display=court?"grid":"flex";v.className="visuals"+(five?" five":"")+(court?" courtgrid":"");
+ let v=document.getElementById("visuals");v.innerHTML="";v.style.display=court?"grid":"flex";v.className="visuals"+(five?" five":"")+(court?" courtgrid":"")+(items.length===2?" two":"");
  items.forEach((it,i)=>{
    if(five&&i===3){let br=document.createElement("div");br.className="break";v.appendChild(br)}
    let key=typeof it==="string"?it:it[0],label=typeof it==="string"?it:it[1],c=cardObj(key);
