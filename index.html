@@ -1,4 +1,4 @@
-<!doctype html><html lang='ko'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1,viewport-fit=cover'><meta name='theme-color' content='#101116'><title>타로 리딩 퀴즈 v4.5</title><style>
+<!doctype html><html lang='ko'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1,viewport-fit=cover'><meta name='theme-color' content='#101116'><title>타로 리딩 퀴즈 v4.6</title><style>
 *{box-sizing:border-box} :root{--bg:#101116;--card:#1a1c24;--line:#343743;--txt:#f7f4ed;--muted:#a8abb5;--gold:#e7c675;--ok:#a9e6b1;--bad:#ffaaa5}
 body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif;-webkit-tap-highlight-color:transparent}
 .app{max-width:560px;margin:auto;padding:env(safe-area-inset-top) 12px calc(24px + env(safe-area-inset-bottom))}
@@ -37,7 +37,7 @@ header{position:sticky;top:0;background:#101116ed;backdrop-filter:blur(12px);z-i
 @keyframes sparkle{0%{opacity:0;transform:translate(-50%,-50%) scale(.4) rotate(0)}35%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1.7) rotate(20deg)}}
 .box.correctfx{animation:correctPop .65s ease}
 .sparklefx{position:fixed;left:50%;top:42%;z-index:30;pointer-events:none;font-size:44px;animation:sparkle .7s ease forwards}
-</style></head><body><div class="app"><header><div class="top"><div class="title">🃏 타로 리딩 퀴즈 <span style="font-size:12px;color:#888">v4.5</span></div><div class="score" id="score"></div></div><div class="filters" id="filters"></div></header>
+</style></head><body><div class="app"><header><div class="top"><div class="title">🃏 타로 리딩 퀴즈 <span style="font-size:12px;color:#888">v4.6</span></div><div class="score" id="score"></div></div><div class="filters" id="filters"></div></header>
 <div class="box"><div class="small" style="margin:0 0 3px;text-align:left">학습 모드</div><div class="modes" id="modes"></div></div>
 <div class="box" id="quizbox"><div class="qhead" id="qhead"></div><div class="subq" id="subq"></div><div class="cardlabel" id="cardlabel" style="display:none"></div><div class="pic" id="pic"><img id="img"><div id="imgfail" class="imgfail">이미지를 불러오지 못했습니다.<br>인터넷 연결 후 다시 시도해 주세요.</div></div><div class="visuals" id="visuals" style="display:none"></div><div class="choices" id="choices"></div>
 <div class="feedback" id="feedback"><div id="result" class="result"></div><div id="cardname" class="cardname"></div><div id="explain" class="explain"></div><div id="hook" class="hook"></div><div id="detail" class="detail"></div><button id="next" class="next">다음 문제 →</button></div></div>
@@ -133,5 +133,24 @@ function tarotImageFallback(img){
   note.textContent="이미지 오류 · 카드명 기준으로 확인하세요.";
   img.parentNode.insertBefore(note,img.nextSibling);
 }
+
+
+function scrollToQuestion(){
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    const target=document.querySelector(".qhead")?.closest(".box")
+      || document.querySelector("#question")?.closest(".box")
+      || document.querySelector(".question")?.closest(".box");
+    if(target){
+      const header=document.querySelector("header");
+      const offset=(header?.offsetHeight||0)+8;
+      const y=target.getBoundingClientRect().top+window.scrollY-offset;
+      window.scrollTo({top:Math.max(0,y),behavior:"smooth"});
+    }else window.scrollTo({top:0,behavior:"smooth"});
+  }));
+}
+document.addEventListener("click",function(e){
+  const btn=e.target.closest("button");
+  if(btn && (btn.textContent||"").includes("다음 문제")) setTimeout(scrollToQuestion,0);
+});
 
 </script></body></html>
